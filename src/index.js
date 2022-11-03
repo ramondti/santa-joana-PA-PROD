@@ -17,7 +17,7 @@ app.get("/santa-joana", async (req, res) => {
 });
 
 app.listen(9393, (err, data) => {
-  console.log(" ### PA PROD ### Ouvindo na porta 9393");
+  console.log(" ### PA PROD ### Ouvindo na porta 9898");
 });
 
 export default app;
