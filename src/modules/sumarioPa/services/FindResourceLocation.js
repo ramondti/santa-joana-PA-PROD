@@ -13,6 +13,7 @@ export class FindResourceLocations {
     WHERE cd_atendimento = DBI_FHIR_SUMARIO_PA.cd_atendimento)
      AS display,
      CNES,
+     (SELECT ds_razao_social FROM multi_empresas WHERE cd_multi_empresa =(SELECT cd_multi_empresa FROM atendime WHERE cd_atendimento = DBI_FHIR_SUMARIO_INTERNACAO.cd_atendimento)) DS_RAZAO_SOCIAL,
      CNPJ
    FROM DBI_FHIR_SUMARIO_PA
    WHERE id_sumario_PA = ${idSumarioPa}
@@ -27,7 +28,7 @@ export class FindResourceLocations {
             type: {
               text: "CNES",
             },
-            value: CNES, //`${queryResource[0].CNES}`,
+            value: queryResource[0].CNES, //`${queryResource[0].CNES}`,
           },
         ],
         type: [
@@ -35,7 +36,7 @@ export class FindResourceLocations {
             text: "HOSPITAL",
           },
         ],
-        name: `${queryResource[0].DISPLAY}`,
+        name: `${queryResource[0].DS_RAZAO_SOCIAL}`,
       },
     };
 
