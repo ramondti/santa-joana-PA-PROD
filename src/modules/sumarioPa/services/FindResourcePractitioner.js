@@ -38,7 +38,7 @@ export class FindResourcePractitioner {
                 type: {
                   text: "CRM",
                 },
-                value: CRM, //`${queryResource[0].NUMERO_REGISTRO}`, //"$numero_registro"
+                value: `${queryResource[0].NUMERO_REGISTRO}`, //`${queryResource[0].NUMERO_REGISTRO}`, //"$numero_registro"
               },
               {
                 type: {
