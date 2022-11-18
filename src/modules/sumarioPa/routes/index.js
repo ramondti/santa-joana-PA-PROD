@@ -59,7 +59,7 @@ export async function getSantaJoana() {
       WHERE internacao.cd_atendimento = DBI_FHIR_SUMARIO_PA.CD_ATENDIMENTO
       AND ROWNUM = 1) AS MEDICAMENTO  
     FROM DBINTEGRA.DBI_FHIR_SUMARIO_PA
-    WHERE sn_status = 'S'
+    WHERE sn_status = 'N'
       `
     );
 
