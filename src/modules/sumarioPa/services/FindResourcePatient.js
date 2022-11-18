@@ -30,7 +30,7 @@ export class FindResourcePatient {
             type: {
               text: "CPF",
             },
-            value: CPF, // `${queryResource[0].CPF}`, //"$cpf",
+            value: `${queryResource[0].CPF}`, // `${queryResource[0].CPF}`, //"$cpf",
           },
           {
             type: {
