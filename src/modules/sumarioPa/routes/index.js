@@ -1,5 +1,4 @@
 import knex from "../../../database/db";
-import axios from "axios";
 import { FindRecourceCarePlan } from "../services/FindRecourceCarePlan";
 import { FindResourceAllergyIntolerance } from "../services/FindResourceAllergyIntolerance.js";
 import { FindResourceComposition } from "../services/FindResourceComposition";
@@ -19,6 +18,7 @@ import { FindResourceProcedure } from "../services/FindResourceProcedure";
 import { FindResourceRelatedPerson } from "../services/FindResourceRelatedPerson";
 import { FindResourceRiskAssessment } from "../services/FindResourceRiskAssessment";
 const { v4: uuidv4 } = require("uuid");
+import api from "../services/api";
 export async function getSantaJoana() {
   try {
     console.log("### INICIANDO PROCESSO ###");
@@ -36,13 +36,11 @@ export async function getSantaJoana() {
     const findResourceEpisodeOfCare = new FindResourceEpisodeOfCare();
     const findResourceEncounter = new FindResourceEncounter();
     const findResourceProcedure = new FindResourceProcedure();
-    const findResourceMedicationAdministration =
-      new FindResourceMedicationAdministration();
+    const findResourceMedicationAdministration = new FindResourceMedicationAdministration();
     const findResourceRiskAssessment = new FindResourceRiskAssessment();
     const findResourceObservation = new FindResourceObservation();
     const findResourceObservation2 = new FindResourceObservation2();
     const findRecourceCarePlan = new FindRecourceCarePlan();
-    const URL_SANTA_JOANA = process.env.URL_SANTA_JOANA;
     const newId = uuidv4();
     const newId2 = uuidv4();
     const newId3 = uuidv4();
@@ -201,21 +199,31 @@ export async function getSantaJoana() {
         await findRecourceCarePlan.execute(sumarioPa.ID_SUMARIO_PA)
       );
     }
-    await knex.raw(
-      `UPDATE DBINTEGRA.DBI_FHIR_SUMARIO_PA 
-          SET sn_status = 'S' 
-      WHERE id_sumario_pa = ${sumarioPa.ID_SUMARIO_PA} `
-    );
 
-    const response = await axios.put(`${URL_SANTA_JOANA}${bundle.ID}`, result, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await api.put(`${bundle.ID}`, result, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    console.log("### PA PROD ### Envio PUT -> ", response.status);
+      await knex.raw(
+        `UPDATE DBINTEGRA.DBI_FHIR_SUMARIO_PA 
+            SET sn_status = 'S' 
+        WHERE id_sumario_pa = ${sumarioPa.ID_SUMARIO_PA} `
+      );
 
-    console.log("### PA PROD ### PROCESSO ENCERRADO ###");
+      console.log("### PA PROD ### Envio PUT -> ", response.status);
+      console.log("### PA PROD ### PROCESSO ENCERRADO ###");
+      
+    } catch (error) {
+      await knex.raw(
+        `UPDATE DBINTEGRA.DBI_FHIR_SUMARIO_PA 
+            SET sn_status = 'N' 
+        WHERE id_sumario_pa = ${sumarioPa.ID_SUMARIO_PA} `
+      );
+      console.log("### Setou para N");
+    }
 
     return result;
   } catch (error) {
